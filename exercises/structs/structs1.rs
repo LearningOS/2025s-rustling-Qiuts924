@@ -24,6 +24,7 @@ mod tests {
     #[test]
     fn classic_c_structs() {
         // TODO: Instantiate a classic c struct!
+        // let green =
         let green = ColorClassicStruct {
             red: 0,
             green: 255,
