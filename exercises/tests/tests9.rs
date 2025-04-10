@@ -27,15 +27,19 @@
 //
 // You should NOT modify any existing code except for adding two lines of attributes.
 
-// I AM NOT DONE
-
 extern "Rust" {
     fn my_demo_function(a: u32) -> u32;
+
+    // 将下方函数名连接为linkname
+    #[link_name = "my_demo_function"]
     fn my_demo_function_alias(a: u32) -> u32;
 }
 
 mod Foo {
     // No `extern` equals `extern "Rust"`.
+    // Rust会对函数名进行修饰，隐式增加类型信息，命名空间等，不再是简单的函数名
+    // 使用标记禁止修饰，方便导出该函数
+    #[no_mangle]
     fn my_demo_function(a: u32) -> u32 {
         a
     }
