@@ -1,8 +1,7 @@
 /*
-	heap
-	This question requires you to implement a binary heap function
+    heap
+    This question requires you to implement a binary heap function
 */
-// I AM NOT DONE
 
 use std::cmp::Ord;
 use std::default::Default;
@@ -38,6 +37,21 @@ where
 
     pub fn add(&mut self, value: T) {
         //TODO
+        // 加到末尾，和父节点比较判断是否上浮
+        self.items.push(value);
+        self.count += 1;
+
+        // 上浮操作
+        let mut idx = self.count;
+        while idx > 1 {
+            let parent_idx = self.parent_idx(idx);
+            if (self.comparator)(&self.items[idx], &self.items[parent_idx]) {
+                self.items.swap(idx, parent_idx);
+                idx = parent_idx;
+            } else {
+                break;
+            }
+        }
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -58,7 +72,16 @@ where
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
         //TODO
-		0
+        let left = self.left_child_idx(idx);
+        let right = self.right_child_idx(idx);
+
+        if right > self.count {
+            left // 如果没有右子节点，返回左子节点
+        } else if (self.comparator)(&self.items[right], &self.items[left]) {
+            right // 如果右子节点更优，返回右子节点
+        } else {
+            left // 否则返回左子节点
+        }
     }
 }
 
@@ -85,7 +108,32 @@ where
 
     fn next(&mut self) -> Option<T> {
         //TODO
-		None
+        if self.count == 0 {
+            return None;
+        }
+
+        // 取出堆顶元素
+        // 与 remove 不同, swap_remove 将取出指定元素并使用最后一个元素取代它, 而不是移动后续所有元素
+
+        let top = self.items.swap_remove(1);
+        self.count -= 1;
+
+        if self.count > 0 {
+            // 下沉过程, 从堆顶开始
+            let mut idx = 1;
+
+            while self.children_present(idx) {
+                let child_idx = self.smallest_child_idx(idx);
+                if !(self.comparator)(&self.items[idx], &self.items[child_idx]) {
+                    self.items.swap(idx, child_idx);
+                    idx = child_idx;
+                } else {
+                    break;
+                }
+            }
+        }
+
+        Some(top)
     }
 }
 
